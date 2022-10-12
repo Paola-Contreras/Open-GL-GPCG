@@ -7,7 +7,7 @@ height = 540
 
 pygame.init()
 
-screen = pygame.display.set_mode((width, height)), pygame.OPENGL | pygame.DOUBLEBUF
+screen = pygame.display.set_mode((width, height), pygame.OPENGL | pygame.DOUBLEBUF)
 clock = pygame.time.Clock()
 
 rend = Renderer(screen)

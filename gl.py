@@ -1,6 +1,5 @@
 import glm #math library 
 from OpenGL.GL import *
-from pygame.locals import *
 from OpenGL.GL.shaders import compileProgram, compileShader
 
 class Renderer(object):
