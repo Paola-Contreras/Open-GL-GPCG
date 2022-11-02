@@ -11,8 +11,8 @@ deltaTime = 0.0
 
 zoomIn = 70
 zoomOut = 90
-moveUp = 200
-moveDown = 300
+moveUp = 230
+moveDown = 200
 
 pygame.init()
 
@@ -68,11 +68,15 @@ while isRunning:
         if moveUp <= 350:
             rend.camPosition.y += 10 * deltaTime
             moveUp += 3
+        else:
+            print("limit reached")
     #DownZ
     elif keys[K_s]:
         if moveDown > 0:
             rend.camPosition.y -= 10 * deltaTime
             moveDown -= 3
+        else:
+            print("limit reached")
     #Out
     elif keys[K_z]:
         if zoomOut >= 0:
@@ -80,6 +84,7 @@ while isRunning:
             zoomOut -=1
         else:
             print("limit reached")
+            zoomOut = 90
     #In
     elif keys[K_x]:
         if zoomIn >= 0:
@@ -87,6 +92,7 @@ while isRunning:
             zoomIn -= 1
         else:
             print("limit reached")
+            
 
 
                     #LIGHT
