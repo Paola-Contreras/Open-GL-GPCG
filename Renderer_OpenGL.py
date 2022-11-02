@@ -1,6 +1,5 @@
 import pygame
 from pygame.locals import *
-
 from shaders import *
 
 from gl import Renderer, Model
@@ -9,6 +8,11 @@ width = 960
 height = 540
 
 deltaTime = 0.0
+
+zoomIn = 70
+zoomOut = 90
+moveUp = 200
+moveDown = 300
 
 pygame.init()
 
@@ -19,9 +23,15 @@ rend = Renderer(screen)
 
 rend.setShaders(vertex_shader, fragment_shader)
 
-face = Model("model.obj")
 
-face.position.z -= 10
+face = Model("models\plant.obj", "models\plant_COL.bmp")
+
+face.position.z -= 13
+
+face.scale.x = 1
+face.scale.y = 1
+face.scale.z = 1
+
 
 rend.scene.append( face )
 
@@ -40,18 +50,64 @@ while isRunning:
             if event.key == pygame.K_ESCAPE:
                 isRunning = False
 
+            elif event.key == pygame.K_1:
+                rend.filledMode()
 
-    if keys[K_LEFT]:
+            elif event.key == pygame.K_2:
+                rend.wireframeMode()
+
+                    #MOVEMENTS 
+    #Left
+    if keys[K_a]:
         rend.camPosition.x -= 10 * deltaTime
+    #Right
+    elif keys[K_d]:
+        rend.camPosition.x += 10 * deltaTime
+    #Up
+    elif keys[K_w]:
+        if moveUp <= 350:
+            rend.camPosition.y += 10 * deltaTime
+            moveUp += 3
+    #DownZ
+    elif keys[K_s]:
+        if moveDown > 0:
+            rend.camPosition.y -= 10 * deltaTime
+            moveDown -= 3
+    #Out
+    elif keys[K_z]:
+        if zoomOut >= 0:
+            rend.camPosition.z += 10 * deltaTime
+            zoomOut -=1
+        else:
+            print("limit reached")
+    #In
+    elif keys[K_x]:
+        if zoomIn >= 0:
+            rend.camPosition.z -= 10 * deltaTime
+            zoomIn -= 1
+        else:
+            print("limit reached")
+
+
+                    #LIGHT
+    if keys[K_LEFT]:
+        rend.pointLight.x -= 10 * deltaTime
 
     elif keys[K_RIGHT]:
-        rend.camPosition.x += 10 * deltaTime
+        rend.pointLight.x += 10 * deltaTime
+    
+    elif keys[K_UP]:
+        rend.pointLight.y += 10 * deltaTime
+
+    elif keys[K_DOWN]:
+        rend.pointLight.y -= 10 * deltaTime
 
     deltaTime = clock.tick(60) / 1000
-    #print(deltaTime)
+    rend.time += deltaTime
 
     rend.update()
     rend.render()
     pygame.display.flip()
+
 
 pygame.quit()
