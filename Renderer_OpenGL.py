@@ -54,10 +54,10 @@ while isRunning:
             elif event.key == pygame.K_c:
                 rend.wireframeMode()
 
-    if keys[K_x]:
+    if keys[K_i]:
         if rend.camDistance > 2:
             rend.camDistance -= 2 * deltaTime
-    elif keys[K_z]:
+    elif keys[K_o]:
         if rend.camDistance < 10:
             rend.camDistance += 2 * deltaTime
 
