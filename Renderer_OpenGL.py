@@ -1,18 +1,17 @@
+from pickle import TRUE
 import pygame
 from pygame.locals import *
+
 from shaders import *
 
 from gl import Renderer, Model
+
+from math import cos, sin, radians
 
 width = 960
 height = 540
 
 deltaTime = 0.0
-
-zoomIn = 70
-zoomOut = 90
-moveUp = 230
-moveDown = 200
 
 pygame.init()
 
@@ -23,11 +22,11 @@ rend = Renderer(screen)
 
 rend.setShaders(vertex_shader, fragment_shader)
 
+rend.target.z -= 10
 
 face = Model("models\plant.obj", "models\plant_COL.bmp")
 
-face.position.z -= 13
-
+face.position.z -= 20
 face.scale.x = 1
 face.scale.y = 1
 face.scale.z = 1
@@ -50,63 +49,46 @@ while isRunning:
             if event.key == pygame.K_ESCAPE:
                 isRunning = False
 
-            elif event.key == pygame.K_1:
+            elif event.key == pygame.K_z:
                 rend.filledMode()
-
-            elif event.key == pygame.K_2:
+            elif event.key == pygame.K_c:
                 rend.wireframeMode()
 
-                    #MOVEMENTS 
-    #Left
-    if keys[K_a]:
-        rend.camPosition.x -= 10 * deltaTime
-    #Right
-    elif keys[K_d]:
-        rend.camPosition.x += 10 * deltaTime
-    #Up
-    elif keys[K_w]:
-        if moveUp <= 350:
-            rend.camPosition.y += 10 * deltaTime
-            moveUp += 3
-        else:
-            print("limit reached")
-    #DownZ
-    elif keys[K_s]:
-        if moveDown > 0:
-            rend.camPosition.y -= 10 * deltaTime
-            moveDown -= 3
-        else:
-            print("limit reached")
-    #Out
+    if keys[K_x]:
+        if rend.camDistance > 2:
+            rend.camDistance -= 2 * deltaTime
     elif keys[K_z]:
-        if zoomOut >= 0:
-            rend.camPosition.z += 10 * deltaTime
-            zoomOut -=1
-        else:
-            print("limit reached")
-            zoomOut = 90
-    #In
-    elif keys[K_x]:
-        if zoomIn >= 0:
-            rend.camPosition.z -= 10 * deltaTime
-            zoomIn -= 1
-        else:
-            print("limit reached")
-            
+        if rend.camDistance < 10:
+            rend.camDistance += 2 * deltaTime
+
+    if keys[K_a]:
+        rend.angle -= 30 * deltaTime
+    elif keys[K_d]:
+        rend.angle += 30 * deltaTime
 
 
-                    #LIGHT
+    if keys[K_w]:
+        if rend.camPosition.y < 8:
+            rend.camPosition.y += 5 * deltaTime
+    elif keys[K_s]:
+        if rend.camPosition.y > -3:
+            rend.camPosition.y -= 5 * deltaTime
+
+
+    rend.target.y = rend.camPosition.y
+
+    rend.camPosition.x = rend.target.x + sin(radians(rend.angle)) * rend.camDistance
+    rend.camPosition.z = rend.target.z + cos(radians(rend.angle)) * rend.camDistance
+    
     if keys[K_LEFT]:
         rend.pointLight.x -= 10 * deltaTime
-
     elif keys[K_RIGHT]:
         rend.pointLight.x += 10 * deltaTime
-    
     elif keys[K_UP]:
         rend.pointLight.y += 10 * deltaTime
-
     elif keys[K_DOWN]:
         rend.pointLight.y -= 10 * deltaTime
+
 
     deltaTime = clock.tick(60) / 1000
     rend.time += deltaTime
@@ -114,6 +96,5 @@ while isRunning:
     rend.update()
     rend.render()
     pygame.display.flip()
-
 
 pygame.quit()
